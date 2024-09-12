@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dial-up Nostalgia | Advanced Web Experience</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <style>
+        @keyframes glitch {
+            0% {
+                transform: translate(0)
+            }
+            20% {
+                transform: translate(-5px, 5px)
+            }
+            40% {
+                transform: translate(-5px, -5px)
+            }
+            60% {
+                transform: translate(5px, 5px)
+            }
+            80% {
+                transform: translate(5px, -5px)
+            }
+            to {
+                transform: translate(0)
+            }
+        }
+        .glitch {
+            animation: glitch 1s linear infinite;
+        }
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: .05;
+            z-index: 9999;
+        }
+        .noise:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/png;base64,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');
+            animation: noise .2s linear infinite;
+        }
+        @keyframes noise {
+            0% { transform: translate(0,0) }
+            10% { transform: translate(-5%,-5%) }
+            20% { transform: translate(-10%,5%) }
+            30% { transform: translate(5%,-10%) }
+            40% { transform: translate(-5%,15%) }
+            50% { transform: translate(-10%,5%) }
+            60% { transform: translate(15%,0) }
+            70% { transform: translate(0,10%) }
+            80% { transform: translate(-15%,0) }
+            90% { transform: translate(10%,5%) }
+            100% { transform: translate(5%,0) }
+        }
+        .retro-text {
+            font-family: 'Courier New', monospace;
+            color: #33ff00;
+            text-shadow: 0 0 5px #33ff00;
+        }
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        .crt::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: rgba(18, 16, 16, 0.1);
+            opacity: 0;
+            z-index: 2;
+            pointer-events: none;
+            animation: flicker 0.15s infinite;
+        }
+        @keyframes flicker {
+            0% {opacity: 0.27861;}
+            5% {opacity: 0.34769;}
+            10% {opacity: 0.23604;}
+            15% {opacity: 0.90626;}
+            20% {opacity: 0.18128;}
+            25% {opacity: 0.83891;}
+            30% {opacity: 0.65583;}
+            35% {opacity: 0.67807;}
+            40% {opacity: 0.26559;}
+            45% {opacity: 0.84693;}
+            50% {opacity: 0.96019;}
+            55% {opacity: 0.08594;}
+            60% {opacity: 0.20313;}
+            65% {opacity: 0.71988;}
+            70% {opacity: 0.53455;}
+            75% {opacity: 0.37288;}
+            80% {opacity: 0.71428;}
+            85% {opacity: 0.70419;}
+            90% {opacity: 0.7003;}
+            95% {opacity: 0.36108;}
+            100% {opacity: 0.24387;}
+        }
+        .loading-bar {
+            width: 0;
+            height: 5px;
+            background: #33ff00;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transition: width 0.5s ease-out;
+        }
+        .pixel-art {
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+<body class="bg-black text-white overflow-x-hidden">
+    <div class="noise"></div>
+    <div class="loading-bar"></div>
+    <div class="crt min-h-screen flex flex-col">
+        <header class="py-4 px-6 bg-gray-900">
+            <nav class="flex justify-between items-center">
+                <div class="text-2xl font-bold retro-text glitch">Dial-up Nostalgia</div>
+                <ul class="flex space-x-4">
+                    <li><a href="#home" class="hover:text-green-400 transition-colors duration-300">Home</a></li>
+                    <li><a href="#about" class="hover:text-green-400 transition-colors duration-300">About</a></li>
+                    <li><a href="#gallery" class="hover:text-green-400 transition-colors duration-300">Gallery</a></li>
+                    <li><a href="#contact" class="hover:text-green-400 transition-colors duration-300">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="flex-grow">
+            <section id="home" class="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-black">
+                <div class="text-center">
+                    <h1 class="text-6xl font-bold mb-4 retro-text glitch">Welcome to the Dial-up Era</h1>
+                    <p class="text-xl mb-8">Experience the nostalgia of the early internet</p>
+                    <a href="#about" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded transition-colors duration-300">Learn More</a>
+                </div>
+            </section>
+
+            <section id="about" class="py-16 bg-gray-900">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-4xl font-bold mb-8 retro-text">About Dial-up</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="mb-4">Dial-up internet was the gateway to the online world for millions of people in the 1990s and early 2000s. It was characterized by its distinctive connection sounds and slow speeds, but it opened up a world of possibilities.</p>
+                            <p>Despite its limitations, dial-up internet paved the way for the high-speed connections we enjoy today and played a crucial role in the development of the modern internet.</p>
+                        </div>
+                        <div class="flex justify-center items-center">
+                            <img src="_92877b36-55e1-4c68-bbe9-98022c10bee8.png" alt="Old computer with dial-up modem" class="rounded-lg shadow-lg pixel-art">
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+
+    <section id="gallery" class="py-16 bg-black">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-8 retro-text">Nostalgia Gallery</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
+                    <img src="_84da2b5d-4de0-4d45-be24-3086868fd319.png" alt="Old computer" class="w-full h-48 object-cover mb-4 pixel-art">
+                    <h3 class="text-xl font-semibold mb-2">Vintage PC</h3>
+                    <p>The classic beige box that started it all.</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
+                    <img src="_212ae3fa-baf9-4c0b-b86a-0877e3cd3ebb.png" alt="Dial-up modem" class="w-full h-48 object-cover mb-4 pixel-art">
+                    <h3 class="text-xl font-semibold mb-2">56K Modem</h3>
+                    <p>The iconic device that connected us to the world.</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
+                    <img src="_1e76b9e8-5924-4014-b0ff-993196808dac.png" alt="Old web browser" class="w-full h-48 object-cover mb-4 pixel-art">
+                    <h3 class="text-xl font-semibold mb-2">Retro Browser</h3>
+                    <p>Navigating the early web in style.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="timeline" class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-8 retro-text">Internet Evolution Timeline</h2>
+            <div class="relative">
+                <div class="absolute h-full w-1 bg-green-500 left-1/2 transform -translate-x-1/2"></div>
+                <div class="timeline-item" data-year="1991">
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-lg max-w-md mx-auto">
+                        <h3 class="text-xl font-semibold mb-2">1991: The World Wide Web</h3>
+                        <p>Tim Berners-Lee introduces the World Wide Web to the public.</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-year="1995">
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-lg max-w-md mx-auto">
+                        <h3 class="text-xl font-semibold mb-2">1995: Dial-up Goes Mainstream</h3>
+                        <p>AOL and other ISPs make dial-up internet widely accessible.</p>
+                    </div>
+                </div>
+                <div class="timeline-item" data-year="2000">
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-lg max-w-md mx-auto">
+                        <h3 class="text-xl font-semibold mb-2">2000: Broadband Emerges</h3>
+                        <p>High-speed internet starts to replace dial-up connections.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="interactive" class="py-16 bg-black">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-8 retro-text">Dial-up Simulator</h2>
+            <div class="bg-gray-800 p-8 rounded-lg shadow-lg">
+                <div id="dialup-sound" class="mb-4">
+                    <button id="play-sound" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded transition-colors duration-300">Connect to Internet</button>
+                    <div id="connection-status" class="mt-4 text-xl font-semibold"></div>
+                </div>
+                <div id="loading-simulation" class="hidden">
+                    <div class="h-4 bg-gray-700 rounded-full mt-4">
+                        <div id="progress-bar" class="h-full bg-green-500 rounded-full" style="width: 0%"></div>
+                    </div>
+                    <p id="loading-text" class="mt-2 text-center"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-8 retro-text">Contact Us</h2>
+            <form class="max-w-lg mx-auto">
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-bold mb-2">Name:</label>
+                    <input type="text" id="name" name="name" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-green-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-bold mb-2">Email:</label>
+                    <input type="email" id="email" name="email" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-green-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="message" class="block text-sm font-bold mb-2">Message:</label>
+                    <textarea id="message" name="message" rows="4" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-green-500" required></textarea>
+                </div>
+                <button type="submit" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded transition-colors duration-300">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 Dial-up Nostalgia. All rights reserved.</p>
+            <p class="mt-2">Created with love for the early internet era.</p>
+        </div>
+    </footer>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate timeline items
+        gsap.utils.toArray('.timeline-item').forEach(item => {
+            gsap.from(item, {
+                opacity: 0,
+                y: 50,
+                scrollTrigger: {
+                    trigger: item,
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    scrub: 1,
+                }
+            });
+        });
+
+        // Animate gallery items
+        gsap.utils.toArray('#gallery .bg-gray-800').forEach(item => {
+            gsap.from(item, {
+                opacity: 0,
+                scale: 0.8,
+                scrollTrigger: {
+                    trigger: item,
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    scrub: 1,
+                }
+            });
+        });
+
+        // Loading bar animation
+        gsap.to('.loading-bar', {
+            width: '100%',
+            duration: 3,
+            ease: 'power2.inOut'
+        });
+
+        // Dial-up Simulator
+        const playButton = document.getElementById('play-sound');
+        const connectionStatus = document.getElementById('connection-status');
+        const loadingSimulation = document.getElementById('loading-simulation');
+        const progressBar = document.getElementById('progress-bar');
+        const loadingText = document.getElementById('loading-text');
+
+        playButton.addEventListener('click', () => {
+            connectionStatus.textContent = 'Connecting...';
+            playButton.disabled = true;
+
+            // Simulate dial-up sound
+            setTimeout(() => {
+                connectionStatus.textContent = 'Connected!';
+                loadingSimulation.classList.remove('hidden');
+                simulateLoading();
+            }, 5000);
+        });
+
+        function simulateLoading() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    loadingText.textContent = 'Welcome to the internet!';
+                    playButton.disabled = false;
+                } else {
+                    loadingText.textContent = `Loading... ${Math.round(progress)}%`;
+                }
+                progressBar.style.width = `${progress}%`;
+            }, 500);
+        }
+
+        // Glitch effect on scroll
+        window.addEventListener('scroll', () => {
+            const glitchElements = document.querySelectorAll('.glitch');
+            glitchElements.forEach(el => {
+                el.style.animation = 'none';
+                el.offsetHeight; // Trigger reflow
+                el.style.animation = null;
+            });
+        });
+    </script>
+</body>
+</html>
